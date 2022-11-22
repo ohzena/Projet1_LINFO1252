@@ -1,21 +1,23 @@
-#include <pthread.h>
 #include <stdio.h>
+#include <pthread.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
+#include <errno.h>
 #include <semaphore.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 int reading = 2560;
 int writing = 640;
-
-int write, read;
+int ecrire , lire;
 int writecount, readcount;
 
 pthread_mutex_t mutex_readcount;
 pthread_mutex_t mutex_writecount;
+pthread_mutex_t z;
 
 sem_t wsem; 
-sem_t resm; 
+sem_t rsem; 
+
 
 void rw_datab(void){
     while(rand() > RAND_MAX/10000){
@@ -45,13 +47,13 @@ void *writer(void *write){
         }
         pthread_mutex_unlock(&mutex_writecount);
     }
-    return NULL
+    return NULL;
 }
 
 void *reader(void *read){
-    for(int i=0; i<reading; i++){
+    for(int i = 0; i < reading; i++){
         pthread_mutex_lock(&z);
-        sem_wait(&resm);
+        sem_wait(&rsem);
         pthread_mutex_lock(&mutex_readcount);
         readcount++;
         if (readcount==1){ 
@@ -60,9 +62,9 @@ void *reader(void *read){
         }
         pthread_mutex_unlock(&mutex_readcount);
         sem_post(&rsem);
+        pthread_mutex_unlock(&z);
         rw_datab();
         pthread_mutex_lock(&mutex_readcount);
-
         readcount--;
         if (readcount==0){ 
             sem_post(&wsem);
@@ -74,54 +76,47 @@ void *reader(void *read){
 
 
 int main(int argc, char* argv[]) {
-    write = 1;
-    read = 1;
 
-    if(argc != 3) {return EXIT_FAILURE;}
+    int lire = atoi(argv[1]);
+    int ecrire = atoi(argv[2]);
 
-    
-//    int arg_read = sscanf(argv[1], "%d", &read);
-//    int arg_write = sscanf(argv[2], "%d", &write);
-//   writercount = write;
-//    readercount = read;
-//    if(write == 0){
-//        for (int i = 0; i < reading;i++){rw_datab();}
-//        for(int i = 0; i < writing;i++){rw_datab();}
-//        return 0;
-//    }
+    if ((ecrire <= 0) || (lire <= 0)) {
+        return EXIT_SUCCESS;
+    }
 
-
+    pthread_t threadreaders[lire], threadwriters[ecrire];
 
     //Initialisation mutex
     if(pthread_mutex_init(&mutex_readcount, NULL) !=0){printf("Erreur creation du reader mutex");}
     if(pthread_mutex_init(&mutex_writecount, NULL) !=0){printf("Erreur creation du writer mutex");}
+    if(pthread_mutex_init(&z, NULL) !=0){printf("Erreur creation du z mutex");}
     //Initialisation des semaphores
     if(sem_init(&wsem, 0, 1)!=0){printf("Erreur creation du reader semaphore");}
-    if(sem_init(&rsem, 0, 1) !=0){printf("Erreur creation du writer semaphore");}
+    if(sem_init(&rsem, 0, 1 !=0)){printf("Erreur creation du writer semaphore");}
 
+
+    printf("on est la\n");
 
     //creation des threads threadreaders et threadwriters
-    pthread_t threadreaders[read], threadwriters[write];
-
-    for(int i = 0; i < read; i++){
-        if((pthread_create(&threadreaders[i], NULL, (void*)reader, NULL) != 0)) {
+    for(int i = 0; i < lire; i++){
+        if((pthread_create(&threadreaders[i], NULL, reader, NULL) != 0)) {
             printf("Erreur creation du threadreaders");
         }
     }
 
-    for(int i = 0; i < write; i++){
-        if((pthread_create(&threadwriters[i], NULL, (void*)writer, NULL) != 0)) {
+    for(int i = 0; i < ecrire ; i++){
+        if((pthread_create(&threadwriters[i], NULL, writer, NULL) != 0)) {
             printf("Erreur creation du threadwriters");
         }
     }
 
-    for(int i = 0; i < read; i++){
+    for(int i = 0; i < lire; i++){
         if((pthread_join(threadreaders[i], NULL) != 0)) {
             printf("Erreur pthread_join threadreaders");
         }
     }
 
-    for(int i = 0; i < write; i++){
+    for(int i = 0; i < ecrire; i++){
         if((pthread_join(threadwriters[i], NULL) != 0)) {
             printf("Erreur pthread_join threadwriters");
         }
@@ -129,29 +124,15 @@ int main(int argc, char* argv[]) {
 
 
     //destroy mutex
-    if(pthread_mutex_destroy(&mutex_writecount)!= 0){printf("Desctrucion du mutex writer")};
-    if(pthread_mutex_destroy(&mutex_readcount)!= 0){printf("Desctrucion dumutex reader")};
+    if(pthread_mutex_destroy(&mutex_writecount)!= 0){printf("Desctrucion du mutex writer");}
+    if(pthread_mutex_destroy(&mutex_readcount)!= 0){printf("Desctrucion dumutex reader");}
+    if(pthread_mutex_destroy(&z)!= 0){printf("Desctrucion dumutex z");}
     //destroy semaphore
-    if(sem_destroy(&wsem!= 0){printf("Desctrucion du writing semaphore")};
-    if(sem_destroy(&rsem)!= 0){printf("Desctrucion du reading semaphore")};
+    if(sem_destroy(&wsem)!= 0){printf("Desctrucion du writing semaphore");}
+    if(sem_destroy(&rsem)!= 0){printf("Desctrucion du reading semaphore");}
+
+    printf("Bitch is done\n");
 
     return(EXIT_SUCCESS);
 } 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
