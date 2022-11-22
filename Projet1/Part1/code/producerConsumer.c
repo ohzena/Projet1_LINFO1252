@@ -15,7 +15,6 @@ int in;
 
 
 int init_buffer(){
-    srandom(53);
     buffer_size = 8;
     if(0 != pthread_mutex_init(&mutex, NULL)){
         return -1;
@@ -54,11 +53,10 @@ int destroy_buffer(){
 
 int produce(){
     for(int i=0;i<10000;i++);
-    return random();
+    return 1;
 }
 
 void put(int data){
-    
     if(in == buffer_size){
         printf("Put dans un buffer full \n");
     }
@@ -69,33 +67,41 @@ void put(int data){
 
 // Producteur
 void *producer(void *param) {
+    int * ret = (int*) malloc(sizeof(in));
+    *ret = -1;
     int item;
     int done = *((int*)param);
     while(done>0){
         item = produce();
-        sem_wait(&empty); // attente d'une place libre
-        pthread_mutex_lock(&mutex);
+        if(sem_wait(&empty)==-1){ // attente d'une place libre
+            pthread_exit(ret);
+        }
+        if(pthread_mutex_lock(&mutex)!=0){
+            pthread_exit(ret);
+        }
         // section critique
         
         put(item);
         
         
-        pthread_mutex_unlock(&mutex);
-
-        sem_post(&full); // il y a une place remplie en plus
+        if(pthread_mutex_unlock(&mutex)!=0){
+            pthread_exit(ret);
+        }
+        if(sem_post(&full)!=0){ // il y a une place remplie en plus
+            pthread_exit(ret);
+        }
         done -= 1;
 
     }
-    pthread_exit(NULL);
+    *ret = 0;
+    pthread_exit(ret);
 }
 
 int get(){
-    //printf("GET %i\n", nbr_cycle_consumer);
     if(in == 0){
         printf("Error get sur buffer vide \n");
     }
     int data = buffer[first];
-    buffer[first] =0;
     first = (first+1)%buffer_size;
     in = in -1;
     return data;
@@ -108,27 +114,38 @@ int consume(int item){
 
 // Consommateur
 void *consumer(void *param){
+    int * ret = (int*) malloc(sizeof(in));
+    *ret = -1;
     int item;
     int done = *((int*)param);
     while(done>0) {
-        sem_wait(&full); // attente d'une place remplie
-        pthread_mutex_lock(&mutex);
+        if(sem_wait(&full)!=0){ // attente d'une place remplie
+            pthread_exit(ret);
+        }
+        if(0!=pthread_mutex_lock(&mutex)){
+            pthread_exit(ret);
+        }
         // section critique
         
         item=get();
         
-        pthread_mutex_unlock(&mutex);
+        if(0!=pthread_mutex_unlock(&mutex)){
+            pthread_exit(ret);
+        }
         
-        sem_post(&empty); // il y a une place libre en plus
+        if(sem_post(&empty)){ // il y a une place libre en plus
+            pthread_exit(ret);
+        }
 
         consume(item);
         done -=1;
     }
-    pthread_exit(NULL);
+    *ret = 0;
+    pthread_exit(ret);
 }
 
 int main(int argc, char *argv[]){
-    if (argc != 4){
+    if (argc != 3){
         printf("Illegal number of argument\n");
         return -1;
     }
@@ -136,9 +153,10 @@ int main(int argc, char *argv[]){
         printf("Error init_buffer\n");
         return -1;
     }
-    int nbr_producer = atoi(argv[1]);
-    int nbr_consumer = atoi(argv[2]);
-    int nbr_cycle = atoi(argv[3]);
+    int nbr_thread = atoi(argv[1]);
+    int nbr_producer = nbr_thread/2;
+    int nbr_consumer = (nbr_thread/2) + (nbr_thread%2);
+    int nbr_cycle = atoi(argv[2]);
 
     
     pthread_t thread_producer[nbr_producer];
@@ -162,7 +180,6 @@ int main(int argc, char *argv[]){
         if(err!=0) {
             printf("Error: producer creation\n");
             return -1;
-            //error(err,"pthread_create");
         }
         nbr_cycle_supp -= 1;
     }
@@ -182,23 +199,33 @@ int main(int argc, char *argv[]){
         if(err!=0) {
             printf("Error: consumer creation\n");
             return -1;
-            //error(err,"pthread_create");
         }
         nbr_cycle_supp -= 1;
     }
 
-
     for(int i=0;i<nbr_producer;i++) {
-        if(0 != pthread_join(thread_producer[i],NULL)){
+        int *err_ptr;
+        if(0 != pthread_join(thread_producer[i],(void **)&err_ptr)){
             printf("Error: producer join\n");
             return -1;
         }
+        if(*err_ptr==-1){
+            printf("Error in producer thread %i\n",i);
+            return -1;
+        }
+        free(err_ptr);
     }
     for(int i=0;i<nbr_consumer;i++) {
-        if(0 != pthread_join(thread_consumer[i],NULL)){
+        int *err_ptr;
+        if(0 != pthread_join(thread_consumer[i],(void**)&err_ptr)){
             printf("Error: consumer join\n");
             return -1;
         }
+        if(*err_ptr==-1){
+            printf("Error in consumer thread %i\n",i);
+            return -1;
+        }
+        free(err_ptr);
     }
 
     free(nbr_cycle_consumer_ptr);
@@ -210,6 +237,5 @@ int main(int argc, char *argv[]){
         printf("Error destroy_buffer \n");
         return -1;
     }
-    printf("EXIT_SUCCESS2\n");
     return EXIT_SUCCESS;
 }
