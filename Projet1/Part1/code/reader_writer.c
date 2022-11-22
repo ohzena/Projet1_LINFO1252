@@ -13,7 +13,7 @@ int writecount, readcount;
 
 pthread_mutex_t mutex_readcount;
 pthread_mutex_t mutex_writecount;
-pthread_mutex_t z;
+
 
 sem_t wsem; 
 sem_t rsem; 
@@ -27,6 +27,7 @@ void rw_datab(void){
 }
 
 void *writer(void *write){
+    int exc = 1;
     for(int i = 0; i < writing; i++) {
         pthread_mutex_lock(&mutex_writecount);
         //section critique
@@ -51,8 +52,8 @@ void *writer(void *write){
 }
 
 void *reader(void *read){
+    int exc = 1;
     for(int i = 0; i < reading; i++){
-        pthread_mutex_lock(&z);
         sem_wait(&rsem);
         pthread_mutex_lock(&mutex_readcount);
         readcount++;
@@ -62,7 +63,6 @@ void *reader(void *read){
         }
         pthread_mutex_unlock(&mutex_readcount);
         sem_post(&rsem);
-        pthread_mutex_unlock(&z);
         rw_datab();
         pthread_mutex_lock(&mutex_readcount);
         readcount--;
@@ -77,22 +77,23 @@ void *reader(void *read){
 
 int main(int argc, char* argv[]) {
 
-    int lire = atoi(argv[1]);
-    int ecrire = atoi(argv[2]);
+    int lire, ecrire;
 
-    if ((ecrire <= 0) || (lire <= 0)) {
-        return EXIT_SUCCESS;
-    }
+    if(argc != 2) {printf("Arguments inssufisants"); return EXIT_SUCCESS; }
+
+    int nbr_thread = atoi(argv[1]);
+    lire = nbr_thread/2;
+    ecrire = (nbr_thread/2) + (nbr_thread%2);
 
     pthread_t threadreaders[lire], threadwriters[ecrire];
 
     //Initialisation mutex
     if(pthread_mutex_init(&mutex_readcount, NULL) !=0){printf("Erreur creation du reader mutex");}
     if(pthread_mutex_init(&mutex_writecount, NULL) !=0){printf("Erreur creation du writer mutex");}
-    if(pthread_mutex_init(&z, NULL) !=0){printf("Erreur creation du z mutex");}
     //Initialisation des semaphores
     if(sem_init(&wsem, 0, 1)!=0){printf("Erreur creation du reader semaphore");}
     if(sem_init(&rsem, 0, 1 !=0)){printf("Erreur creation du writer semaphore");}
+    
 
 
     printf("on est la\n");
@@ -126,13 +127,11 @@ int main(int argc, char* argv[]) {
     //destroy mutex
     if(pthread_mutex_destroy(&mutex_writecount)!= 0){printf("Desctrucion du mutex writer");}
     if(pthread_mutex_destroy(&mutex_readcount)!= 0){printf("Desctrucion dumutex reader");}
-    if(pthread_mutex_destroy(&z)!= 0){printf("Desctrucion dumutex z");}
     //destroy semaphore
     if(sem_destroy(&wsem)!= 0){printf("Desctrucion du writing semaphore");}
     if(sem_destroy(&rsem)!= 0){printf("Desctrucion du reading semaphore");}
 
-    printf("Bitch is done\n");
+    //printf("Bitch is done\n");
 
     return(EXIT_SUCCESS);
 } 
-
