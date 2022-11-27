@@ -88,6 +88,6 @@ int main (int argc, char *argv[]){
     }
     
     free(baguette);
-    return EXIT_SUCCES;
+    return EXIT_SUCCESS;
 }
     
