@@ -20,14 +20,13 @@ sem_t rsem;
 
 
 void rw_datab(void){
-    while(rand() > RAND_MAX/10000){
+    for (int i = 0; i < 10000; i++){
         continue;
     }
     return;
 }
 
 void *writer(void *write){
-    int exc = 1;
     for(int i = 0; i < writing; i++) {
         pthread_mutex_lock(&mutex_writecount);
         //section critique
@@ -52,7 +51,6 @@ void *writer(void *write){
 }
 
 void *reader(void *read){
-    int exc = 1;
     for(int i = 0; i < reading; i++){
         sem_wait(&rsem);
         pthread_mutex_lock(&mutex_readcount);
@@ -76,7 +74,6 @@ void *reader(void *read){
 
 
 int main(int argc, char* argv[]) {
-
     int lire, ecrire;
 
     if(argc != 2) {printf("Arguments inssufisants"); return EXIT_SUCCESS; }
@@ -93,10 +90,7 @@ int main(int argc, char* argv[]) {
     //Initialisation des semaphores
     if(sem_init(&wsem, 0, 1)!=0){printf("Erreur creation du reader semaphore");}
     if(sem_init(&rsem, 0, 1 !=0)){printf("Erreur creation du writer semaphore");}
-    
-
-
-    printf("on est la\n");
+   
 
     //creation des threads threadreaders et threadwriters
     for(int i = 0; i < lire; i++){
@@ -130,8 +124,6 @@ int main(int argc, char* argv[]) {
     //destroy semaphore
     if(sem_destroy(&wsem)!= 0){printf("Desctrucion du writing semaphore");}
     if(sem_destroy(&rsem)!= 0){printf("Desctrucion du reading semaphore");}
-
-    //printf("Bitch is done\n");
 
     return(EXIT_SUCCESS);
 } 
