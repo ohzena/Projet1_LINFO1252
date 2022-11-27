@@ -5,7 +5,7 @@
 #include <semaphore.h>
 #include <unistd.h>
 
-#define CYCLES 10000
+#define CYCLES 100000
 
 int PHILO;
 pthread_mutex_t *baguette;
@@ -39,8 +39,6 @@ void* philosophe(void* arg){
 
 
 int main (int argc, char *argv[]){
-    //printf("on est la\n");
-    
     if(argc != 2) {
         printf("Il y a le mauvais nombre d'argument\n");
         return EXIT_FAILURE;
@@ -48,9 +46,6 @@ int main (int argc, char *argv[]){
 
     PHILO = atoi(argv[1]);
     if (PHILO <= 1) return EXIT_SUCCESS;
-
-    //printf("Il y a %d philosophes\n", PHILO);
-
 
     int index[PHILO];
     pthread_t phil[PHILO];
@@ -93,8 +88,6 @@ int main (int argc, char *argv[]){
     }
     
     free(baguette);
-    //printf("Bitch is done\n");
-    
-    return 0;
+    return EXIT_SUCCES;
 }
     
