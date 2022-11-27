@@ -23,7 +23,7 @@ def plot(csv, name):
 
     fig = plt.figure()
     X = range(0,len(threads), 1)
-    plt.errorbar(X, mean, std, fmt='.-', capsize=5, ecolor='black') #, label="philosophes")
+    plt.errorbar(X, mean, std, fmt='.-', capsize=5, ecolor='black', label=name)
     plt.xlim(0, len(threads)+1)
     plt.xticks(threads)
     plt.ylim(bottom=0, top = 1.1*(mean.max() + std.max()))
@@ -34,13 +34,13 @@ def plot(csv, name):
     #nom des axes et titres 
     plt.xlabel('Number of Threads')
     plt.ylabel("Average Time[s]")
-    plt.title('Avgerage time of execution for n threads')
+    plt.title('Avgerage time of execution for n threads for ' + name)
   
     plt.grid(True)
     plt.savefig(name + ".png")
-    #plt.show()
+    plt.show()
     plt.close()
 
-plot(philo, "philosophe")
-plot(rw, "reader_writer")
-plot(procons, "produceur_consumer")
+plot(philo, "Philosophe")
+plot(rw, "Reader_Writer")
+plot(procons, "Produceur_Consumer")
