@@ -2,7 +2,7 @@
 
 echo "Producer_Consumer"
 echo "N,J,End"
-for i in {2..64} 
+for ((i=2; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
@@ -12,7 +12,7 @@ done
 
 echo "Philosophes"
 echo "N,J,End"
-for i in {1..64} 
+for ((i=1; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
@@ -22,7 +22,7 @@ done
 
 echo "Reader_Whriter"
 echo "N,J,End"
-for i in {2..64} 
+for ((i=2; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
