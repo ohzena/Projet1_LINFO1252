@@ -67,7 +67,7 @@ void put(int data){
 
 // Producteur
 void *producer(void *param) {
-    int * ret = (int*) malloc(sizeof(in));
+    int * ret = (int*) malloc(sizeof(int));
     *ret = -1;
     int item;
     int done = *((int*)param);
@@ -114,7 +114,7 @@ int consume(int item){
 
 // Consommateur
 void *consumer(void *param){
-    int * ret = (int*) malloc(sizeof(in));
+    int * ret = (int*) malloc(sizeof(int));
     *ret = -1;
     int item;
     int done = *((int*)param);
