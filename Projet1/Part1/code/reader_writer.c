@@ -6,8 +6,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-int reading = 2560;
-int writing = 640;
+int nbr_reading = 2560;
+int nbr_writing = 640;
+int reading;
+int writing;
 int ecrire , lire;
 int writecount, readcount;
 
@@ -39,7 +41,6 @@ void *writer(void *write){
         rw_datab();
         sem_post(&wsem);
         pthread_mutex_lock(&mutex_writecount);
-
         //section critique
         writecount--;
         if (writecount == 0){
@@ -51,6 +52,7 @@ void *writer(void *write){
 }
 
 void *reader(void *read){
+    
     for(int i = 0; i < reading; i++){
         sem_wait(&rsem);
         pthread_mutex_lock(&mutex_readcount);
@@ -80,7 +82,7 @@ int main(int argc, char* argv[]) {
 
     int nbr_thread = atoi(argv[1]);
     lire = nbr_thread/2;
-    ecrire = (nbr_thread/2) + (nbr_thread%2);
+    ecrire = (nbr_thread/2);
 
     pthread_t threadreaders[lire], threadwriters[ecrire];
 
@@ -93,12 +95,14 @@ int main(int argc, char* argv[]) {
    
 
     //creation des threads threadreaders et threadwriters
+    reading = nbr_reading/lire;
     for(int i = 0; i < lire; i++){
         if((pthread_create(&threadreaders[i], NULL, reader, NULL) != 0)) {
             printf("Erreur creation du threadreaders");
         }
     }
 
+    writing = nbr_writing/ecrire;
     for(int i = 0; i < ecrire ; i++){
         if((pthread_create(&threadwriters[i], NULL, writer, NULL) != 0)) {
             printf("Erreur creation du threadwriters");
