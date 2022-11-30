@@ -22,7 +22,7 @@ done
 
 echo "Reader_Whriter"
 echo "N,J,End"
-for ((i=2; i <= 64; i=i*2))
+for ((i=1; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
