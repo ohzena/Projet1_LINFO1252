@@ -7,28 +7,32 @@ import pandas as pd
 
 
 #creation du jeu de donné
-philo = pd.read_csv("csv/philo.csv", index_col=None)
-procons = pd.read_csv("csv/pro_con.csv", index_col=None)
-rw = pd.read_csv("csv/rw.csv", index_col=None)
-#print(philo)
-#print(procons)
-#print(rw)
+philo = pd.read_csv("csv/philo.csv")
+pro_cons = pd.read_csv("csv/pro_con.csv")
+rw = pd.read_csv("csv/rw.csv")
 
 def plot(csv, name):
-    #creation du jeu de donné
+    #mean and std
     csv.dropna(axis=0,  thresh=None, subset=None, inplace=False)
     mean = csv.groupby("N")['End'].mean()
     std = csv.groupby("N")['End'].std()
     threads = csv["N"].unique()
 
+    #creation du graphe
     fig = plt.figure()
-    X = range(0,len(threads), 1)
-    plt.errorbar(X, mean, std, fmt='.-', capsize=5, ecolor='black', label=name)
-    plt.xlim(0, len(threads)+1)
-    plt.xticks(threads)
-    plt.ylim(bottom=0, top = 1.1*(mean.max() + std.max()))
+    ax = plt.subplot()
 
-    plt.plot(threads, mean, color="pink", linewidth=1.0, linestyle="-")
+    first = range(0,len(threads))
+    plt.errorbar(first, mean, yerr=std, fmt='.-', capsize=5, label=name)
+
+
+    ax.set_xlim(0, len(threads))
+    ax.set_xticks(range(len(threads)))
+    ax.set_xticklabels(threads)
+    ax.set_ylim(0, 1.1*(mean.max() + std.max()))
+ 
+    #plt.plot(threads, mean, label= "Average " + name)
+    #plt.plot(threads, std, label="Standard error " + name)
     plt.legend()
 
     #nom des axes et titres 
@@ -41,6 +45,7 @@ def plot(csv, name):
     plt.show()
     plt.close()
 
+#Création des plots
 plot(philo, "Philosophe")
 plot(rw, "Reader_Writer")
-plot(procons, "Produceur_Consumer")
+plot(pro_cons, "Produceur_Consumer")
