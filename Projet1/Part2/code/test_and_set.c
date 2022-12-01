@@ -1,10 +1,4 @@
-#include <stdlib.h>   //Nbr ramdom
-#include <pthread.h>  //Mutex et thread
-#include <stdio.h> //EXIT_SUCCESS
-
-typedef struct my_mutex{
-    int *val;
-} my_mutex_t;
+#include "test_and_set.h"
 
 int NTHREADS;
 long global=0;
@@ -63,7 +57,7 @@ void *func(void * param) {
   for(int j=0;j<6400/NTHREADS;j++) {
     err=my_mutex_lock(&mutex_global);
     if(err!=0)
-      error(err,"pthread_mutex_lock");
+      error("pthread_mutex_lock");
     global=increment(global);
     err=my_mutex_unlock(&mutex_global);
     if(err!=0)

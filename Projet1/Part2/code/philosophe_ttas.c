@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <semaphore.h>
 #include <unistd.h>
+#include "test_and_set.h"
 
 #define CYCLES 1000000
 
 int PHILO;
-pthread_mutex_t *baguette;
+my_mutex_t *baguette;
 
 void manger(int index){
 }
@@ -22,16 +23,16 @@ void* philosophe(void* arg){
     while(count < CYCLES){
         //si gaucher pour eviter les deadlock
 	    if(left<right){
-            pthread_mutex_lock(&baguette[left]);
-            pthread_mutex_lock(&baguette[right]);
+            my_mutex_lock_tts(&baguette[left]);
+            my_mutex_lock_tts(&baguette[right]);
 		} else{
-            pthread_mutex_lock(&baguette[right]);
-            pthread_mutex_lock(&baguette[left]);
+            my_mutex_lock_tts(&baguette[right]);
+            my_mutex_lock_tts(&baguette[left]);
         }
 	    manger(*index);
 	    count ++;
-        pthread_mutex_unlock(&baguette[left]);
-        pthread_mutex_unlock(&baguette[right]);
+        my_mutex_unlock(&baguette[left]);
+        my_mutex_unlock(&baguette[right]);
 	}
 	return (NULL);
 }
@@ -48,18 +49,17 @@ int main (int argc, char *argv[]){
 
     int index[PHILO];
     pthread_t phil[PHILO];
-    baguette = malloc(PHILO * sizeof(pthread_mutex_t));
+    baguette = malloc(PHILO * sizeof(my_mutex_t));
 
 
     if(PHILO == 1) {
         for(int i = 0; i< CYCLES; i++){manger(1);}
         return 1;
     }
-    
 
     //initiation mutex
     for(int i = 0; i < PHILO; i++){
-        if(pthread_mutex_init(&(baguette[i]), NULL) != 0) {
+        if(my_mutex_init(&baguette[i]) != 0) {
              printf("Erreur initiation du mutex");
         }
     }
@@ -81,7 +81,7 @@ int main (int argc, char *argv[]){
 
     //destruction du mutex
     for (int i = 0; i < PHILO; i++){
-        if( pthread_mutex_destroy(&(baguette[i])) != 0) {
+        if(my_mutex_destroy(&baguette[i]) != 0) {
              printf("Erreur destruction du pthread_mutex_destroy");
         }
     }
