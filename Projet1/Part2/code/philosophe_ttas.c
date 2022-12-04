@@ -1,8 +1,3 @@
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <semaphore.h>
-#include <unistd.h>
 #include "test_and_set.h"
 
 #define CYCLES 1000000

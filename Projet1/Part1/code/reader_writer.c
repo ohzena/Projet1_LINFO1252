@@ -15,7 +15,7 @@ int writecount, readcount;
 
 pthread_mutex_t mutex_readcount;
 pthread_mutex_t mutex_writecount;
-
+pthread_mutex_t z;
 
 sem_t wsem; 
 sem_t rsem; 
@@ -54,6 +54,7 @@ void *writer(void *write){
 void *reader(void *read){
     
     for(int i = 0; i < reading; i++){
+        pthread_mutex_lock(&z);
         sem_wait(&rsem);
         pthread_mutex_lock(&mutex_readcount);
         readcount++;
@@ -63,6 +64,7 @@ void *reader(void *read){
         }
         pthread_mutex_unlock(&mutex_readcount);
         sem_post(&rsem);
+        pthread_mutex_unlock(&z);
         rw_datab();
         pthread_mutex_lock(&mutex_readcount);
         readcount--;

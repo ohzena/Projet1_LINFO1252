@@ -1,13 +1,9 @@
-#include <stdlib.h>   //Nbr ramdom
-#include <semaphore.h> //semaphore
-#include <pthread.h>  //Mutex et thread
-#include <stdio.h> //EXIT_SUCCESS
 #include "test_and_set.h"
 
 
 my_mutex_t mutex;
-sem_t empty;
-sem_t full;
+my_sem_t empty;
+my_sem_t full;
 int* buffer;
 int first;
 int last;
@@ -20,11 +16,11 @@ int init_buffer(){
     if(0 != my_mutex_init(&mutex)){
         return -1;
     }
-    if (sem_init(&empty, 0 , buffer_size) != 0){
+    if (my_sem_init(&empty, 0) != 0){
         return -1;
     }
     
-    if (sem_init(&full, 0 , 0) !=0){
+    if (my_sem_init(&full,0) !=0){
         return -1;
     }
 
@@ -42,10 +38,10 @@ int destroy_buffer(){
     if (my_mutex_destroy(&mutex) !=0 ){
         return -1;
     }
-    if (sem_destroy(&full) != 0){
+    if (my_sem_destroy(&full) != 0){
         return -1;
     }
-    if (sem_destroy(&empty) != 0){
+    if (my_sem_destroy(&empty) != 0){
         return -1;
     }
     free(buffer);
@@ -74,7 +70,7 @@ void *producer(void *param) {
     int done = *((int*)param);
     while(done>0){
         item = produce();
-        if(sem_wait(&empty)==-1){ // attente d'une place libre
+        if(my_sem_wait(&empty)==-1){ // attente d'une place libre
             pthread_exit(ret);
         }
         if(my_mutex_lock_tts(&mutex)!=0){
@@ -88,7 +84,7 @@ void *producer(void *param) {
         if(my_mutex_unlock(&mutex)!=0){
             pthread_exit(ret);
         }
-        if(sem_post(&full)!=0){ // il y a une place remplie en plus
+        if(my_sem_post(&full)!=0){ // il y a une place remplie en plus
             pthread_exit(ret);
         }
         done -= 1;
@@ -120,7 +116,7 @@ void *consumer(void *param){
     int item;
     int done = *((int*)param);
     while(done>0) {
-        if(sem_wait(&full)!=0){ // attente d'une place remplie
+        if(my_sem_wait(&full)!=0){ // attente d'une place remplie
             pthread_exit(ret);
         }
         if(0!=my_mutex_lock_tts(&mutex)){
@@ -134,7 +130,7 @@ void *consumer(void *param){
             pthread_exit(ret);
         }
         
-        if(sem_post(&empty)){ // il y a une place libre en plus
+        if(my_sem_post(&empty)){ // il y a une place libre en plus
             pthread_exit(ret);
         }
 

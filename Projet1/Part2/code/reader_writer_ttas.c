@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <semaphore.h>
-#include <stdlib.h>
-#include <ctype.h>
 #include "test_and_set.h"
 
 int nbr_reading = 2560;
@@ -16,10 +9,10 @@ int writecount, readcount;
 
 my_mutex_t mutex_readcount;
 my_mutex_t  mutex_writecount;
+my_mutex_t z;
 
-
-sem_t wsem; 
-sem_t rsem; 
+my_sem_t wsem; 
+my_sem_t rsem; 
 
 
 void rw_datab(void){
@@ -35,19 +28,19 @@ void *writer(void *write){
         //section critique
         writecount++;
         if (writecount == 1){
-            sem_wait(&rsem);
+            my_sem_wait(&rsem);
         }
-        my_mutex_lock(&mutex_writecount);
-        sem_wait(&wsem);
+        my_mutex_unlock(&mutex_writecount);
+        my_sem_wait(&wsem);
         rw_datab();
-        sem_post(&wsem);
+        my_sem_post(&wsem);
         my_mutex_lock_tts(&mutex_writecount);
         //section critique
         writecount--;
         if (writecount == 0){
-            sem_post(&rsem);
+            my_sem_post(&rsem);
         }
-        my_mutex_lock(&mutex_writecount);
+        my_mutex_unlock(&mutex_writecount);
     }
     return NULL;
 }
@@ -55,22 +48,23 @@ void *writer(void *write){
 void *reader(void *read){
     
     for(int i = 0; i < reading; i++){
-        sem_wait(&rsem);
+        my_sem_wait(&rsem);
         my_mutex_lock_tts(&mutex_readcount);
         readcount++;
         if (readcount==1){ 
             // arrivée du premier reader
-            sem_wait(&wsem);
+            my_sem_wait(&wsem);
         }
-        my_mutex_lock(&mutex_readcount);
-        sem_post(&rsem);
+        my_mutex_unlock(&mutex_readcount);
+        my_sem_post(&rsem);
+        my_mutex_unlock(&z);
         rw_datab();
         my_mutex_lock_tts(&mutex_readcount);
         readcount--;
         if (readcount==0){ 
-            sem_post(&wsem);
+            my_sem_post(&wsem);
         }
-        my_mutex_lock(&mutex_readcount);
+        my_mutex_unlock(&mutex_readcount);
     }
     return NULL;
 }
@@ -91,8 +85,8 @@ int main(int argc, char* argv[]) {
     if(my_mutex_init(&mutex_readcount) !=0){printf("Erreur creation du reader mutex");}
     if(my_mutex_init(&mutex_writecount) !=0){printf("Erreur creation du writer mutex");}
     //Initialisation des semaphores
-    if(sem_init(&wsem, 0, 1)!=0){printf("Erreur creation du reader semaphore");}
-    if(sem_init(&rsem, 0, 1 !=0)){printf("Erreur creation du writer semaphore");}
+    if(my_sem_init(&wsem, 0)!=0){printf("Erreur creation du reader semaphore");}
+    if(my_sem_init(&rsem, 0) !=0){printf("Erreur creation du writer semaphore");}
    
 
     //creation des threads threadreaders et threadwriters
@@ -127,8 +121,8 @@ int main(int argc, char* argv[]) {
     if(my_mutex_destroy(&mutex_writecount)!= 0){printf("Desctrucion du mutex writer");}
     if(my_mutex_destroy(&mutex_readcount)!= 0){printf("Desctrucion dumutex reader");}
     //destroy semaphore
-    if(sem_destroy(&wsem)!= 0){printf("Desctrucion du writing semaphore");}
-    if(sem_destroy(&rsem)!= 0){printf("Desctrucion du reading semaphore");}
+    if(my_sem_destroy(&wsem)!= 0){printf("Desctrucion du writing semaphore");}
+    if(my_sem_destroy(&rsem)!= 0){printf("Desctrucion du reading semaphore");}
 
     return(EXIT_SUCCESS);
 } 
