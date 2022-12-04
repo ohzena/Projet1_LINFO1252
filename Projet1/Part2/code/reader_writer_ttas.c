@@ -85,6 +85,7 @@ int main(int argc, char* argv[]) {
     //Initialisation mutex
     if(my_mutex_init(&mutex_readcount) !=0){printf("Erreur creation du reader mutex");}
     if(my_mutex_init(&mutex_writecount) !=0){printf("Erreur creation du writer mutex");}
+    if(my_mutex_init(&z) !=0){printf("Erreur creation du z mutex");}
     //Initialisation des semaphores
     if(my_sem_init(&wsem, 1)!=0){printf("Erreur creation du reader semaphore");}
     if(my_sem_init(&rsem, 1) !=0){printf("Erreur creation du writer semaphore");}
@@ -120,7 +121,8 @@ int main(int argc, char* argv[]) {
 
     //destroy mutex
     if(my_mutex_destroy(&mutex_writecount)!= 0){printf("Desctrucion du mutex writer");}
-    if(my_mutex_destroy(&mutex_readcount)!= 0){printf("Desctrucion dumutex reader");}
+    if(my_mutex_destroy(&mutex_readcount)!= 0){printf("Desctrucion du mutex reader");}
+    if(my_mutex_destroy(&z)!= 0){printf("Desctrucion du mutex z");}
     //destroy semaphore
     if(my_sem_destroy(&wsem)!= 0){printf("Desctrucion du writing semaphore");}
     if(my_sem_destroy(&rsem)!= 0){printf("Desctrucion du reading semaphore");}
