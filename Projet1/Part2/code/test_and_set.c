@@ -57,11 +57,13 @@ void *func(void * param) {
   for(int j=0;j<6400/NTHREADS;j++) {
     err=my_mutex_lock(&mutex_global);
     if(err!=0)
-      error("pthread_mutex_lock");
+      printf("Error pthread_mutex_lock");
+      return -1;
     global=increment(global);
     err=my_mutex_unlock(&mutex_global);
     if(err!=0)
-      error(err,"pthread_mutex_unlock");
+      printf("Error pthread_mutex_unlock");
+      return -1;
   }
   return(NULL);
 }
@@ -77,23 +79,27 @@ int main (int argc, char *argv[])  {
 
     err=my_mutex_init( &mutex_global);
     if(err!=0)
-        error(err,"pthread_mutex_init");
+        printf("Error pthread_mutex_init");
+        return -1;
 
     for(int i=0;i<NTHREADS;i++) {
         err=pthread_create(&(thread[i]),NULL,&func,NULL);
         if(err!=0)
-        error(err,"pthread_create");
+        printf("Error pthread_create");
+        return -1;
     }
 
     for(int i=NTHREADS-1;i>=0;i--) {
         err=pthread_join(thread[i],NULL);
         if(err!=0)
-        error(err,"pthread_join");
+        printf("Error pthread_join");
+        return -1;
     }
 
     err=my_mutex_destroy(&mutex_global);
     if(err!=0)
-        error(err,"pthread_mutex_destroy");
+        printf("Error pthread_mutex_destroy");
+        return -1;
 
     printf("global: %ld\n",global);
 
