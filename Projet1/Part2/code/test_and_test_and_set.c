@@ -53,7 +53,6 @@ int main (int argc, char *argv[])  {
         printf("Error pthread_mutex_destroy");
         return -1;
     }
-    printf("global: %ld\n",global);
 
     return(EXIT_SUCCESS);
 }
