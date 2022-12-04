@@ -6,7 +6,7 @@ for ((i=2; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
-        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./ProduceurConsumer ${i} 8192
+        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./ProduceurConsumer ${i} 64192
     done
 done
 
@@ -22,7 +22,7 @@ done
 
 echo "Reader_Whriter"
 echo "N,J,End"
-for ((i=1; i <= 64; i=i*2))
+for ((i=2; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
@@ -58,7 +58,7 @@ for ((i=2; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
-        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./MyProduceurConsumer ${i} 8192
+        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./MyProduceurConsumer ${i} 64192
     done
 done
 
@@ -74,7 +74,7 @@ done
 
 echo "My_Reader_Whriter"
 echo "N,J,End"
-for ((i=1; i <= 64; i=i*2))
+for ((i=2; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
@@ -89,7 +89,7 @@ for ((i=2; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
-        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./ProduceurConsumerTTAS ${i} 8192
+        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./ProduceurConsumerTTAS ${i} 64192
     done
 done
 
@@ -105,7 +105,7 @@ done
 
 echo "Reader_Whriter_TTAS"
 echo "N,J,End"
-for ((i=1; i <= 64; i=i*2))
+for ((i=2; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
