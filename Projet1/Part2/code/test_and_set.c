@@ -61,8 +61,6 @@ int main (int argc, char *argv[])  {
     }
         
 
-    printf("global: %ld\n",global);
-
     return(EXIT_SUCCESS);
 }
 
