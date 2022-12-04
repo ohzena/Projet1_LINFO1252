@@ -55,4 +55,53 @@ int increment(int i) {
   return i+1;
 }
 
+int my_sem_init(my_sem_t *sem_ptr,int init_val){
+    //Allocation and initiallisation the space for the value in the semaphore
+    sem_ptr->val_ptr = (int*)malloc(sizeof(int));
+    if(sem_ptr->val_ptr == NULL){
+        return -1;
+    }
+    *(sem_ptr->val_ptr)=init_val;
+
+    //Allocation and initiallisation the space for mutex
+    sem_ptr->mutex_ptr = (my_mutex_t*)malloc(sizeof(my_mutex_t));
+    if(sem_ptr->mutex_ptr == NULL){
+        return -1;
+    }
+    if(-1==my_mutex_init(sem_ptr->mutex_ptr)){
+        return -1;
+    }
+    return 0;
+}
+
+int my_sem_wait(my_sem_t *sem_ptr){
+    int go = 1;
+    while(go){
+        //Use the mutex to past the thread to ready state 
+        //and decrease the value (if value of semaphore > 0) 
+        //without concurrent modification.
+        my_mutex_lock_tts(sem_ptr->mutex_ptr);
+        if(*(sem_ptr->val_ptr)>0){
+            go = 0;
+            *(sem_ptr->val_ptr) -= 1;
+        }
+        my_mutex_unlock(sem_ptr->mutex_ptr);
+    }
+    return 0;
+}
+
+int my_sem_post(my_sem_t *sem_ptr){
+    my_mutex_lock_tts(sem_ptr->mutex_ptr);
+    *(sem_ptr->val_ptr) += 1;
+    my_mutex_unlock(sem_ptr->mutex_ptr);
+    return 0;
+}
+
+int my_sem_destroy(my_sem_t *sem_ptr){
+    my_mutex_destroy(sem_ptr->mutex_ptr);
+    free(sem_ptr->mutex_ptr);
+    free(sem_ptr->val_ptr);
+    return 0;
+}
+
 
