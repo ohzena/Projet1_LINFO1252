@@ -1,4 +1,4 @@
-all: philo p_and_c w_and_r  tas ttas  my_philo my_p_and_c my_w_and_r  my_philo_ttac my_p_and_c_ttac my_w_and_r_ttac 
+all: philo p_and_c w_and_r tas ttas my_philo my_p_and_c my_w_and_r  my_philo_ttac my_p_and_c_ttac my_w_and_r_ttac 
 
 p_and_c: Part1/code/producerConsumer.c
 	@gcc -Wall -o bin/ProduceurConsumer -pthread Part1/code/producerConsumer.c
@@ -9,10 +9,10 @@ philo: Part1/code/philosophe.c
 w_and_r: Part1/code/reader_writer.c
 	@gcc -Wall -o bin/ReadWrite -pthread Part1/code/reader_writer.c
 
-tac: Part2/code/test_and_set.c
+tas: Part2/code/test_and_set.c
 	@gcc -Wall -o bin/TAS -pthread Part2/code/test_and_set.c
 
-ttac: Part2/code/test_and_test_and_set.c
+ttas: Part2/code/test_and_test_and_set.c
 	@gcc -Wall -o bin/TTAS -pthread Part2/code/test_and_test_and_set.c
 	
 my_p_and_c: Part2/code/myproducerConsumer.c
