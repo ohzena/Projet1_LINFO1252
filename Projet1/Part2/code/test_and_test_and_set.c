@@ -6,14 +6,6 @@ my_mutex_t* lock;
 int NTHREADS;
 long global=0;
 
-int my_mutex_lock_tts(my_mutex_t* mutex_ptr){
-    while (test_and_set(*mutex_ptr)) {
-        while (*(mutex_ptr-> val) != 0) {
-        }
-    }
-    return 0;
-}
-
 void* func_tts(void * param){
     for (int i = 0; i < 6400/NTHREADS; i++){
         my_mutex_lock_tts(lock);

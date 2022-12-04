@@ -21,6 +21,14 @@ int test_and_set(my_mutex_t mutex){
     return y;
 }
 
+int my_mutex_lock_tts(my_mutex_t* mutex_ptr){
+    while (test_and_set(*mutex_ptr)) {
+        while (*(mutex_ptr-> val) != 0) {
+        }
+    }
+    return 0;
+}
+
 int my_mutex_init(my_mutex_t *mutex_ptr){
     mutex_ptr->val = (int*)malloc(sizeof(int));
     if (mutex_ptr->val == NULL){
