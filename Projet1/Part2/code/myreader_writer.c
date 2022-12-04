@@ -88,8 +88,8 @@ int main(int argc, char* argv[]) {
     if(my_mutex_init(&mutex_readcount) !=0){printf("Erreur creation du reader mutex");}
     if(my_mutex_init(&mutex_writecount) !=0){printf("Erreur creation du writer mutex");}
     //Initialisation des semaphores
-    if(my_sem_init(&wsem, 0) !=0){printf("Erreur creation du reader semaphore");}
-    if(my_sem_init(&rsem, 0) !=0){printf("Erreur creation du writer semaphore");}
+    if(my_sem_init(&wsem, 1) !=0){printf("Erreur creation du reader semaphore");}
+    if(my_sem_init(&rsem, 1) !=0){printf("Erreur creation du writer semaphore");}
    
 
     //creation des threads threadreaders et threadwriters

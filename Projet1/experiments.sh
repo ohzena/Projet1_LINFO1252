@@ -37,7 +37,7 @@ for ((i=1; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
-        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./TAC ${i}
+        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./TAS ${i}
     done
 done
 
@@ -48,7 +48,7 @@ for ((i=1; i <= 64; i=i*2))
 do
     for j in {1..5} 
     do
-        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./TTAC ${i}
+        /usr/bin/time -o /dev/stdout -f "${i}, ${j}, %e" bin/./TTAS ${i}
     done
 done
 

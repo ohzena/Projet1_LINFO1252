@@ -16,7 +16,7 @@ int init_buffer(){
     if(0 != my_mutex_init(&mutex)){
         return -1;
     }
-    if (my_sem_init(&empty, 0) != 0){
+    if (my_sem_init(&empty, buffer_size) != 0){
         return -1;
     }
     
