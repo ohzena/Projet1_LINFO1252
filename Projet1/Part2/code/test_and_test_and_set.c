@@ -1,5 +1,6 @@
 
 #include "test_and_set.h"
+#include "function_tac.c"
 
 my_mutex_t* lock;
 int NTHREADS;

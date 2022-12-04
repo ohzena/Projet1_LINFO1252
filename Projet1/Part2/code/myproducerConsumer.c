@@ -1,4 +1,5 @@
 #include "test_and_set.h"
+#include "function_tac.c"
 
 my_mutex_t mutex;
 my_sem_t empty;
