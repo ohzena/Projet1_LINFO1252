@@ -1,5 +1,5 @@
-#ifndef HEADER_FILE_TAS
-#define HEADER_FILE_TAS
+#ifndef TEST_AND_SET_H
+#define TEST_AND_SET_H
 
 #include <stdlib.h>   //Nbr ramdom
 #include <pthread.h>  //Mutex et thread
