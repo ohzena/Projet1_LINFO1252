@@ -1,3 +1,11 @@
+#include <stdlib.h>   //Nbr ramdom
+#include <pthread.h>  //Mutex et thread
+#include <stdio.h> //EXIT_SUCCESS
+#include <string.h>
+#include <errno.h>
+#include <unistd.h> //sleep
+#include <ctype.h>
+#include <semaphore.h>
 #include "test_and_set.h"
 
 int NTHREADS;
@@ -6,7 +14,7 @@ my_mutex_t mutex_global;
 
 int test_and_set(my_mutex_t mutex){
     int y;
-    asm (
+    asm(
             "movl $1, %%eax;"
             "xchgl %%eax, (%1);"
             "movl %%eax, %0;"
@@ -38,7 +46,6 @@ int my_mutex_lock(my_mutex_t *mutex_ptr){
 }
 
 int my_mutex_unlock(my_mutex_t *mutex_ptr){
-
     asm (
         "movl $0, %%eax;"
         "xchgl %%eax, (%0);"
@@ -56,14 +63,15 @@ void *func(void * param) {
   int err;
   for(int j=0;j<6400/NTHREADS;j++) {
     err=my_mutex_lock(&mutex_global);
-    if(err!=0)
-      printf("Error pthread_mutex_lock");
-      return -1;
+    if(err!=0) {
+        printf("Error pthread_mutex_lock");
+    }
     global=increment(global);
     err=my_mutex_unlock(&mutex_global);
-    if(err!=0)
-      printf("Error pthread_mutex_unlock");
-      return -1;
+    if(err!=0) {
+        printf("Error pthread_mutex_unlock");
+    }
+      
   }
   return(NULL);
 }
@@ -78,28 +86,34 @@ int main (int argc, char *argv[])  {
     int err;
 
     err=my_mutex_init( &mutex_global);
-    if(err!=0)
+    if(err!=0) {
         printf("Error pthread_mutex_init");
         return -1;
+    }
+        
 
     for(int i=0;i<NTHREADS;i++) {
         err=pthread_create(&(thread[i]),NULL,&func,NULL);
-        if(err!=0)
-        printf("Error pthread_create");
-        return -1;
+        if(err!=0) {
+            printf("Error pthread_create");
+            return -1;
+        }
     }
 
     for(int i=NTHREADS-1;i>=0;i--) {
         err=pthread_join(thread[i],NULL);
-        if(err!=0)
-        printf("Error pthread_join");
-        return -1;
+        if(err!=0) {
+            printf("Error pthread_join");
+            return -1;
+        }
     }
 
     err=my_mutex_destroy(&mutex_global);
-    if(err!=0)
+    if(err!=0) {
         printf("Error pthread_mutex_destroy");
         return -1;
+    }
+        
 
     printf("global: %ld\n",global);
 

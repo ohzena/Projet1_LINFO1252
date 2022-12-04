@@ -1,3 +1,4 @@
+
 #include "test_and_set.h"
 
 my_mutex_t* lock;
@@ -37,29 +38,32 @@ int main (int argc, char *argv[])  {
     int err;
 
     err=my_mutex_init(&lock);
-    if(err!=0)
+    if(err!=0) {
         printf("Error pthread_mutex_init");
         return -1;
+    }
 
     for(int i=0;i<NTHREADS;i++) {
         err=pthread_create(&(thread[i]),NULL,&func_tts,NULL);
-        if(err!=0)
-        printf("Error pthread_create");
-        return -1;
+        if(err!=0) {
+            printf("Error pthread_create");
+            return -1;
+        }
     }
 
     for(int i=NTHREADS-1;i>=0;i--) {
         err=pthread_join(thread[i],NULL);
-        if(err!=0)
-        printf("Error pthread_join");
-        return -1;
+        if(err!=0) {
+            printf("Error pthread_join");
+            return -1;
+        }
     }
 
     err=my_mutex_destroy(&lock);
-    if(err!=0)
+    if(err!=0) {
         printf("Error pthread_mutex_destroy");
         return -1;
-
+    }
     printf("global: %ld\n",global);
 
     return(EXIT_SUCCESS);
