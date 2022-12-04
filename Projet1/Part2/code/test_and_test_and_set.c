@@ -2,25 +2,23 @@
 #include "test_and_set.h"
 #include "function_tac.c"
 
-my_mutex_t* lock;
+my_mutex_t lock;
 int NTHREADS;
 long global=0;
 
 void* func_tts(void * param){
     for (int i = 0; i < 6400/NTHREADS; i++){
-        my_mutex_lock_tts(lock);
+        my_mutex_lock_tts(&lock);
         //critical section
         for (int i = 0; i < 10000; i++);
         global=increment(global);
-        my_mutex_unlock(lock);
+        my_mutex_unlock(&lock);
     }
     return(NULL);
 }
 
 int main (int argc, char *argv[])  {
-    int NTHREADS;
-    long global=0;
-    my_mutex_t lock;
+
 
     if(argc != 2){
         printf("Illegal argument number\n");
@@ -35,7 +33,6 @@ int main (int argc, char *argv[])  {
         printf("Error pthread_mutex_init");
         return -1;
     }
-
     for(int i=0;i<NTHREADS;i++) {
         err=pthread_create(&(thread[i]),NULL,&func_tts,NULL);
         if(err!=0) {
@@ -43,7 +40,6 @@ int main (int argc, char *argv[])  {
             return -1;
         }
     }
-
     for(int i=NTHREADS-1;i>=0;i--) {
         err=pthread_join(thread[i],NULL);
         if(err!=0) {
