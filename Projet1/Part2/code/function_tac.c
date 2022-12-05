@@ -1,10 +1,10 @@
 #include <stdlib.h>   //Nbr ramdom
 #include <pthread.h>  //Mutex et thread
 #include <stdio.h> //EXIT_SUCCESS
-#include <string.h>
-#include <errno.h>
 #include <unistd.h> //sleep
 #include <ctype.h>
+#include <string.h>
+#include <errno.h>
 #include <semaphore.h>
 #include "test_and_set.h"
 
