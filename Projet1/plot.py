@@ -44,10 +44,10 @@ def plot(csv1, csv2, csv3, name1, name2, name3):
     fig = plt.figure()
     ax = plt.subplot()
 
-    first = range(0,len(threads))
+    POSIX = range(0,len(threads))
     TAS = range(0,len(my_threads))
     TTAS = range(0,len(threads_ttas))
-    plt.errorbar(first, mean, yerr=std, fmt='.-', capsize=5, label=name1)
+    plt.errorbar(POSIX, mean, yerr=std, fmt='.-', capsize=5, label=name1)
     plt.errorbar(TAS , my_mean, yerr=my_std, fmt='.-', capsize=5, label=name2)
     plt.errorbar(TTAS, mean_ttas, yerr=std_ttas, fmt='.-', capsize=5, label=name3)
 
@@ -69,7 +69,7 @@ def plot(csv1, csv2, csv3, name1, name2, name3):
     plt.close()
 
 #Création des plots
-plot(philo, my_philo, philo_ttas, "Philosophe", "TAS", "TTAS")
-plot(rw, my_rw, rw_ttas,"Reader_Writer", "TAS", "TTAS")
-plot(pro_cons, my_pro_cons, pro_cons_ttas,"Produceur_Consumer", "TAS", "TTAS")
+#plot(philo, my_philo, philo_ttas, "Philosophe", "TAS", "TTAS")
+#plot(rw, my_rw, rw_ttas,"Reader_Writer", "TAS", "TTAS")
+#plot(pro_cons, my_pro_cons, pro_cons_ttas,"Produceur_Consumer", "TAS", "TTAS")
 plot(tas, ttas, ttas, "Test-And-Set", "TTAS", "")

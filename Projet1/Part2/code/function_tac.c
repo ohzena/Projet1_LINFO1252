@@ -8,6 +8,13 @@
 #include <semaphore.h>
 #include "test_and_set.h"
 
+/**************************************
+ *
+ * 2.1 Function for Test and Set
+ *
+ **************************************/
+
+
 int test_and_set(my_mutex_t mutex){
     int y;
     asm(
@@ -19,14 +26,6 @@ int test_and_set(my_mutex_t mutex){
             :"r"(mutex.val)   /* ptr to val is input operand */
             :"%eax"); /* %eax is clobbered register */
     return y;
-}
-
-int my_mutex_lock_tts(my_mutex_t* mutex_ptr){
-    while (test_and_set(*mutex_ptr)) {
-        while (*(mutex_ptr-> val) != 0) {
-        }
-    }
-    return 0;
 }
 
 int my_mutex_init(my_mutex_t *mutex_ptr){
@@ -63,6 +62,20 @@ int increment(int i) {
   return i+1;
 }
 
+/**************************************
+ *
+ * 2.3 Function for Test and Test and Set
+ *
+ **************************************/
+
+int my_mutex_lock_tts(my_mutex_t* mutex_ptr){
+    while (test_and_set(*mutex_ptr)) {
+        while (*(mutex_ptr-> val) != 0) {
+        }
+    }
+    return 0;
+}
+
 int my_sem_init(my_sem_t *sem_ptr,int init_val){
     //Allocation and initiallisation the space for the value in the semaphore
     sem_ptr->val_ptr = (int*)malloc(sizeof(int));
@@ -81,6 +94,12 @@ int my_sem_init(my_sem_t *sem_ptr,int init_val){
     }
     return 0;
 }
+
+/**************************************
+ *
+ * 2.4. Function for Semophore
+ *
+ **************************************/
 
 int my_sem_wait(my_sem_t *sem_ptr){
     int go = 1;
