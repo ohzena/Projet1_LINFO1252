@@ -70,7 +70,7 @@ int increment(int i) {
 
 int my_mutex_lock_tts(my_mutex_t* mutex_ptr){
     while (test_and_set(*mutex_ptr)) {
-        while (*(mutex_ptr-> val) != 0) {
+        while (*(mutex_ptr-> val)) {
         }
     }
     return 0;
