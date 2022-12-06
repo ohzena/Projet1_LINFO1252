@@ -4,7 +4,7 @@
 #include <semaphore.h>
 #include <unistd.h>
 
-#define CYCLES 1000000
+#define CYCLES 100000
 
 int PHILO;
 pthread_mutex_t *baguette;

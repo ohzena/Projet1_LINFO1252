@@ -1,7 +1,7 @@
 #include "test_and_set.h"
 #include "function_tac.c"
 
-#define CYCLES 1000000
+#define CYCLES 100000
 
 int PHILO;
 my_mutex_t *baguette;

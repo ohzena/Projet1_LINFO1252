@@ -59,17 +59,17 @@ def plot(csv1, csv2, csv3, titre, name1, name2, name3):
     plt.legend()
 
     #nom des axes et titres 
-    plt.xlabel('Number of Threads')
-    plt.ylabel("Average Time[s]")
-    plt.title('Avgerage time of execution for n threads for ' + titre)
+    plt.xlabel('Nombre de Threads')
+    plt.ylabel("Temps[s]")
+    plt.title("Temps moyen d'exécution par n threads pour "  + titre)
   
     plt.grid(True)
-    plt.savefig(titre + ".png")
+    plt.savefig("Produceur_Consumer" + ".png")
     #plt.show()
     plt.close()
 
 #Création des plots
-plot(philo, my_philo, philo_ttas, "Philosophes","POSIX", "TAS", "TTAS")
+#plot(philo, my_philo, philo_ttas, "Philosophes","POSIX", "TAS", "TTAS")
 #plot(rw, my_rw, rw_ttas,"Reader/Writer", "POSIX", "TAS", "TTAS")
-#plot(pro_cons, my_pro_cons, pro_cons_ttas,"Produceur/Consumer", "POSIX", "TAS", "TTAS")
+plot(pro_cons, my_pro_cons, pro_cons_ttas,"Produceur/Consumer", "POSIX", "TAS", "TTAS")
 #plot(tas, ttas, ttas, "Test-And(-Test-And)-Set", "TAS", "", "TTAS")
