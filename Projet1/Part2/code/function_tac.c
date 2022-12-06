@@ -76,6 +76,13 @@ int my_mutex_lock_tts(my_mutex_t* mutex_ptr){
     return 0;
 }
 
+
+/**************************************
+ *
+ * 2.4. Function for Semophore
+ *
+ **************************************/
+
 int my_sem_init(my_sem_t *sem_ptr,int init_val){
     //Allocation and initiallisation the space for the value in the semaphore
     sem_ptr->val_ptr = (int*)malloc(sizeof(int));
@@ -95,11 +102,6 @@ int my_sem_init(my_sem_t *sem_ptr,int init_val){
     return 0;
 }
 
-/**************************************
- *
- * 2.4. Function for Semophore
- *
- **************************************/
 
 int my_sem_wait(my_sem_t *sem_ptr){
     int go = 1;
