@@ -1,6 +1,6 @@
 #!/bin/bash
 
-N_MAX_THREAD=8
+N_MAX_THREAD=64
 
 echo "Producer_Consumer"
 echo "N,J,End"

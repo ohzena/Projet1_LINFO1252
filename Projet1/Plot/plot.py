@@ -21,7 +21,7 @@ philo_ttas = pd.read_csv("csv/philo_ttas.csv")
 pro_cons_ttas = pd.read_csv("csv/pro_cons_ttas.csv")
 rw_ttas = pd.read_csv("csv/rw_ttas.csv")
 
-def plot(csv1, csv2, csv3, name1, name2, name3):
+def plot(csv1, csv2, csv3, titre, name1, name2, name3):
     #mean and std for function part1
     csv1.dropna(axis=0,  thresh=None, subset=None, inplace=False)
     mean = csv1.groupby("N")['End'].mean()
@@ -54,22 +54,22 @@ def plot(csv1, csv2, csv3, name1, name2, name3):
     ax.set_xlim(0, len(threads))
     ax.set_xticks(range(len(threads)))
     ax.set_xticklabels(threads)
-    ax.set_ylim(0, 1.1*(mean.max() + std.max() + my_mean.max() + my_std.max() + mean_ttas.max() + std_ttas.max()))
+    ax.set_ylim(0, 1.1*(mean_ttas.max() + std_ttas.max()))
  
     plt.legend()
 
     #nom des axes et titres 
     plt.xlabel('Number of Threads')
     plt.ylabel("Average Time[s]")
-    plt.title('Avgerage time of execution for n threads for ' + name1)
+    plt.title('Avgerage time of execution for n threads for ' + titre)
   
     plt.grid(True)
-    plt.savefig(name1 + ".png")
-    plt.show()
+    plt.savefig(titre + ".png")
+    #plt.show()
     plt.close()
 
 #Création des plots
-#plot(philo, my_philo, philo_ttas, "Philosophe", "TAS", "TTAS")
-#plot(rw, my_rw, rw_ttas,"Reader_Writer", "TAS", "TTAS")
-#plot(pro_cons, my_pro_cons, pro_cons_ttas,"Produceur_Consumer", "TAS", "TTAS")
-plot(tas, ttas, ttas, "Test-And-Set", "TTAS", "")
+plot(philo, my_philo, philo_ttas, "Philosophes","POSIX", "TAS", "TTAS")
+#plot(rw, my_rw, rw_ttas,"Reader/Writer", "POSIX", "TAS", "TTAS")
+#plot(pro_cons, my_pro_cons, pro_cons_ttas,"Produceur/Consumer", "POSIX", "TAS", "TTAS")
+#plot(tas, ttas, ttas, "Test-And(-Test-And)-Set", "TAS", "", "TTAS")
