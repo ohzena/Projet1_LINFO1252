@@ -12,6 +12,7 @@ void *func(void * param) {
     if(err!=0) {
         printf("Error pthread_mutex_lock");
     }
+    for (int i = 0; i < 10000; i++);
     global=increment(global);
     err=my_mutex_unlock(&mutex_global);
     if(err!=0) {
