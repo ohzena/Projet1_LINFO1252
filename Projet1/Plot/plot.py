@@ -7,19 +7,19 @@ import pandas as pd
 #creation du jeu de donné
 
 #jeu de donné POSIX
-philo = pd.read_csv("Plot/csv/philo.csv")
-pro_cons = pd.read_csv("Plot/csv/pro_con.csv")
-rw = pd.read_csv("Plot/csv/rw.csv")
+philo = pd.read_csv("csv/philo.csv")
+pro_cons = pd.read_csv("csv/pro_con.csv")
+rw = pd.read_csv("csv/rw.csv")
 #jeu de donné TAS
-tas = pd.read_csv("Plot/csv/test_and_set.csv")
-my_philo = pd.read_csv("Plot/csv/my_philo.csv")
-my_pro_cons = pd.read_csv("Plot/csv/my_pro_con.csv")
-my_rw = pd.read_csv("Plot/csv/my_rw.csv")
+tas = pd.read_csv("csv/test_and_set.csv")
+my_philo = pd.read_csv("csv/my_philo.csv")
+my_pro_cons = pd.read_csv("csv/my_pro_con.csv")
+my_rw = pd.read_csv("csv/my_rw.csv")
 #jeu de donné TTAS
-ttas = pd.read_csv("Plot/csv/test_and_test_and_set.csv")
-philo_ttas = pd.read_csv("Plot/csv/philo_ttas.csv")
-pro_cons_ttas = pd.read_csv("Plot/csv/pro_cons_ttas.csv")
-rw_ttas = pd.read_csv("Plot/csv/rw_ttas.csv")
+ttas = pd.read_csv("csv/test_and_test_and_set.csv")
+philo_ttas = pd.read_csv("csv/philo_ttas.csv")
+pro_cons_ttas = pd.read_csv("csv/pro_cons_ttas.csv")
+rw_ttas = pd.read_csv("csv/rw_ttas.csv")
 
 def plot(csv1, csv2, csv3, titre, name1, name2, name3):
     #mean and std for function part1

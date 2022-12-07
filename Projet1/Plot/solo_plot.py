@@ -7,9 +7,9 @@ import pandas as pd
 #creation du jeu de donné
 
 #jeu de donné POSIX
-philo = pd.read_csv("Plot/csv/philo.csv")
-pro_cons = pd.read_csv("Plot/csv/pro_con.csv")
-rw = pd.read_csv("Plot/csv/rw.csv")
+philo = pd.read_csv("csv/philo.csv")
+pro_cons = pd.read_csv("csv/pro_con.csv")
+rw = pd.read_csv("csv/rw.csv")
 
 def plot(csv1, titre, name1):
     #mean and std for function part1
