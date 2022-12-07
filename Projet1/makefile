@@ -28,7 +28,7 @@ my_p_and_c_ttas: Part2/producerConsumer_ttas.c
 	@gcc -Wall -o bin/ProduceurConsumerTTAS -pthread Part2/producerConsumer_ttas.c
 
 my_philo_ttas: Part2/philosophe_ttas.c
-	@gcc -Wall -o bin/PhiloTTAS -pthread Part2/code/philosophe_ttas.c
+	@gcc -Wall -o bin/PhiloTTAS -pthread Part2/philosophe_ttas.c
 
 my_w_and_r_ttas: Part2/reader_writer_ttas.c
 	@gcc -Wall -o bin/ReadWriteTTAS -pthread Part2/reader_writer_ttas.c
