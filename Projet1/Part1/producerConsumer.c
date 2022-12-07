@@ -149,10 +149,13 @@ int main(int argc, char *argv[]){
         printf("Illegal number of argument\n");
         return -1;
     }
+
+    //Initialisation du buffer et des primitives d'attentes active
     if (init_buffer() !=0){
         printf("Error init_buffer\n");
         return -1;
     }
+    //Récupération du nombre de thread et nombre de cycle à effectuer
     int nbr_thread = atoi(argv[1]);
     int nbr_producer = nbr_thread/2;
     int nbr_consumer = (nbr_thread/2) + (nbr_thread%2);
@@ -164,7 +167,8 @@ int main(int argc, char *argv[]){
 
     int err;
 
-
+    //Création des producteurs en s'assurant que le nombre de production à
+    //effectuer est correctement réparti entre les threads.
     int * nbr_cycle_producer_ptr = (int*) malloc(sizeof(int));
     int * nbr_cycle_producer_supp_ptr = (int*) malloc(sizeof(int));
     *nbr_cycle_producer_ptr = nbr_cycle/nbr_producer;
@@ -184,6 +188,8 @@ int main(int argc, char *argv[]){
         nbr_cycle_supp -= 1;
     }
 
+    //Création des consommateurs en s'assurant que le nombre de consommation à
+    //effectuer est correctement réparti entre les threads.
     int * nbr_cycle_consumer_ptr = (int*) malloc(sizeof(int));
     int * nbr_cycle_consumer_supp_ptr = (int*) malloc(sizeof(int));
     *nbr_cycle_consumer_ptr = nbr_cycle/nbr_consumer;
@@ -203,6 +209,7 @@ int main(int argc, char *argv[]){
         nbr_cycle_supp -= 1;
     }
 
+    //Attend que tout les producteurs effectues leurs job.
     for(int i=0;i<nbr_producer;i++) {
         int *err_ptr;
         if(0 != pthread_join(thread_producer[i],(void **)&err_ptr)){
@@ -215,6 +222,7 @@ int main(int argc, char *argv[]){
         }
         free(err_ptr);
     }
+    //Attend que tout les consommateurs effectues leurs job.
     for(int i=0;i<nbr_consumer;i++) {
         int *err_ptr;
         if(0 != pthread_join(thread_consumer[i],(void**)&err_ptr)){
@@ -233,6 +241,7 @@ int main(int argc, char *argv[]){
     free(nbr_cycle_producer_ptr);
     free(nbr_cycle_producer_supp_ptr);
 
+    //Destruction du buffer
     if (destroy_buffer() != 0){
         printf("Error destroy_buffer \n");
         return -1;
