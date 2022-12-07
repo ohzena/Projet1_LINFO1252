@@ -64,8 +64,9 @@ int increment(int i) {
 
 /**************************************
  *
- * 2.3 Function for Test and Test and Set
- *
+ * 2.3 Function lock for Test and Test and Set (others
+ *      Functions are the same than Test ans Set)
+ * 
  **************************************/
 
 int my_mutex_lock_tts(my_mutex_t* mutex_ptr){
