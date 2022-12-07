@@ -6,11 +6,14 @@ my_mutex_t lock;
 int NTHREADS;
 long global=0;
 
+//Fonction appellée par les threads qui un nombre défini de fois la variable global
+//en utilisant l'algorithme test-and-test-and-set.
 void* func_tts(void * param){
     for (int i = 0; i < 6400/NTHREADS; i++){
         my_mutex_lock_tts(&lock);
         //critical section
         for (int i = 0; i < 10000; i++);
+        //Appel de la fonction d'incrémentation
         global=increment(global);
         my_mutex_unlock(&lock);
     }
@@ -28,11 +31,14 @@ int main (int argc, char *argv[])  {
     pthread_t thread[NTHREADS];
     int err;
 
+    //Initialisation du mutex
     err=my_mutex_init(&lock);
     if(err!=0) {
         printf("Error pthread_mutex_init");
         return -1;
     }
+
+    //Création des threads
     for(int i=0;i<NTHREADS;i++) {
         err=pthread_create(&(thread[i]),NULL,&func_tts,NULL);
         if(err!=0) {
@@ -40,6 +46,8 @@ int main (int argc, char *argv[])  {
             return -1;
         }
     }
+
+    //Attente de la fin des threads
     for(int i=NTHREADS-1;i>=0;i--) {
         err=pthread_join(thread[i],NULL);
         if(err!=0) {
@@ -48,6 +56,7 @@ int main (int argc, char *argv[])  {
         }
     }
 
+    //Destruction du mutex
     err=my_mutex_destroy(&lock);
     if(err!=0) {
         printf("Error pthread_mutex_destroy");
