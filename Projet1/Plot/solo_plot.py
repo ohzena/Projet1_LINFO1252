@@ -45,6 +45,6 @@ def plot(csv1, titre, name1):
     plt.close()
 
 #Création des plots
-plot(philo, "Philosophes","POSIX")
-plot(rw, "Reader_Writer", "POSIX")
-plot(pro_cons,"Produceur_Consumer", "POSIX")
+plot(philo, "Philo_seule","POSIX")
+plot(rw, "Reader_Writer_seule", "POSIX")
+plot(pro_cons,"Produceur_Consumer_seule", "POSIX")
